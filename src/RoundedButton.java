@@ -5,13 +5,15 @@ import java.awt.geom.RoundRectangle2D;
 public class RoundedButton extends JButton {
 
     private Color backgroundColor;
-    private Color foregroundColor;
-    private int cornerRadius;
+    private final Color foregroundColor;
+    private final int cornerRadius;
+    private String text;
 
     public RoundedButton(String text, int cornerRadius, Color backgroundColor, Color foregroundColor, int fontSize) {
         super(text);
-        this.backgroundColor =backgroundColor;
-        this.foregroundColor =foregroundColor;
+        this.text = text;
+        this.backgroundColor = backgroundColor;
+        this.foregroundColor = foregroundColor;
         this.cornerRadius = cornerRadius;
         this.setFont(new Font("Arial", Font.TRUETYPE_FONT, fontSize));
         setContentAreaFilled(false);
@@ -33,6 +35,14 @@ public class RoundedButton extends JButton {
         int textY = (height - fontMetrics.getHeight()) / 2 + fontMetrics.getAscent();
         g2.drawString(getText(), textX, textY);
         g2.dispose();
+    }
+
+    public void setBackgroundColor(Color backgroundColor) {
+        this.backgroundColor = backgroundColor;
+    }
+
+    public void setTheText(String text) {
+        this.text=text;
     }
 
 }

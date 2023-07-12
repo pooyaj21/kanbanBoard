@@ -1,27 +1,59 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
 
 public class TaskPanel extends JPanel {
+    private final JLabel title = new JLabel();
+    private final JLabel theText = new JLabel();
     private CategoryPanel currentColumn;
     private Point offset;
-    private final JLabel title = new JLabel();
+    private int currentTask = 0;
+
 
     public TaskPanel(CategoryPanel categoryPanel, KanbanBoardPanel kanbanBoardPanel) {
         currentColumn = categoryPanel;
         setLayout(null);
-        title.setBounds(10, 45, 140, 13);
+        setTitle("the title");//test
+        setText("the text that is so big you cant handel it so you must handel it but you cant you must handel it  you must do it but you cant but you  should");//test
+
+
+        title.setBounds(10, 30, 120, 10);
         title.setFont(new Font("assets/Montserrat-ExtraLight.ttf", Font.BOLD, 13));
         add(title);
+
         JLabel setting = new JLabel("⋮");
-        title.setBounds(130, 15, 140, 13);
-        title.setFont(new Font("assets/Montserrat-ExtraLight.ttf", Font.PLAIN, 13));
+        setting.setBounds(120, 5, 15, 18);
+        setting.setFont(new Font("assets/Montserrat-ExtraLight.ttf", Font.BOLD, 22));
         add(setting);
+
+        theText.setBounds(10, 40, 120, 80);
+        theText.setFont(new Font("assets/Montserrat-ExtraLight.ttf", Font.PLAIN, 10));
+        theText.setHorizontalAlignment(SwingConstants.LEFT);
+        add(theText);
+
+
+        RoundedButton taskType = new RoundedButton(TaskTypes.values()[currentTask].getName(), 17, TaskTypes.values()[currentTask].getColor(), Color.WHITE, 11);
+        taskType.setBounds(10, 5, 50, 20);
+        taskType.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(currentTask==3)currentTask=0;
+                else currentTask++;
+                taskType.setBackgroundColor(TaskTypes.values()[currentTask].getColor());
+                taskType.setText(TaskTypes.values()[currentTask].getName());
+            }
+        });
+        add(taskType);
+
+
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         setBackground(Color.WHITE); // Set background color to white
         setOpaque(false); // Make the panel background transparent
+
 
         addMouseListener(new MouseAdapter() {
             @Override
@@ -99,4 +131,32 @@ public class TaskPanel extends JPanel {
     public void setTitle(String theTitle) {
         title.setText(theTitle);
     }
+
+    public void setText(String text) {
+        int lineLength = 24;
+        int currentIndex = 0;
+        int textLength = text.length();
+        StringBuilder sb = new StringBuilder(text);
+
+        while (currentIndex < textLength) {
+            int nextIndex = currentIndex + lineLength;
+
+            if (nextIndex < textLength) {
+                int spaceIndex = sb.lastIndexOf(" ", nextIndex);
+                if (spaceIndex != -1) {
+                    sb.insert(spaceIndex + 1, "<br>");
+                    currentIndex = spaceIndex + 1;
+                } else {
+                    sb.insert(nextIndex + 1, "<br>");
+                    currentIndex = nextIndex + 1;
+                }
+            } else {
+                break;
+            }
+        }
+        text = sb.toString();
+        theText.setText("<html>" + "<br>" + text + "</html>");
+    }
 }
+
+

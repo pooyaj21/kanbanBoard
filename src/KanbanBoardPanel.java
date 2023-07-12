@@ -57,6 +57,7 @@ public class KanbanBoardPanel extends JPanel {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setResizable(false);
             frame.setLayout(null);
+            frame.setLocationRelativeTo(null); // Center the frame on the screen
             KanbanBoardPanel kanbanBoardPanel = new KanbanBoardPanel();
             kanbanBoardPanel.setBounds(0, 0, frame.getWidth(), frame.getHeight());
             frame.add(kanbanBoardPanel);

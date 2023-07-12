@@ -29,7 +29,6 @@ public class DesignedColumn extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 taskPanel = new TaskPanel(categoryPanel, kanbanBoardPanel);
-                taskPanel.setTitle("aaa");
                 kanbanBoardPanel.add(taskPanel);
                 kanbanBoardPanel.addTask(taskPanel, categoryPanel);
                 kanbanBoardPanel.repaint(); // Repaint the container
