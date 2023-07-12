@@ -9,25 +9,91 @@ import java.awt.geom.RoundRectangle2D;
 public class TaskPanel extends JPanel {
     private final JLabel title = new JLabel();
     private final JLabel theText = new JLabel();
+    private final JPanel settingPanel = new JPanel() {
+        @Override
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            int width = getWidth();
+            int height = getHeight();
+            Shape shape = new RoundRectangle2D.Double(0, 0, width, height, 30, 30);
+            g2.setColor(Color.white);
+            g2.fill(shape);
+            g2.setColor(Color.BLACK);
+            g2.dispose();
+        }
+    };
     private CategoryPanel currentColumn;
     private Point offset;
     private int currentTask = 0;
+    private boolean isSettingOpen = false;
+    private boolean isEditable = false;
 
 
     public TaskPanel(CategoryPanel categoryPanel, KanbanBoardPanel kanbanBoardPanel) {
         currentColumn = categoryPanel;
+        setBackground(Color.white);
         setLayout(null);
         setTitle("the title");//test
         setText("the text that is so big you cant handel it so you must handel it but you cant you must handel it  you must do it but you cant but you  should");//test
+
+
+        add(settingPanel);
+        settingPanel.setVisible(false);
+        settingPanel.setLayout(null);
+
+        RoundedButton editButton = new RoundedButton("Edit", 0, getBackground(), getForeground(), 13);
+        editButton.setBounds(0, 0, 100, 30);
+        editButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                settingPanel.setVisible(false);
+                isSettingOpen = false;
+                isEditable = true;
+            }
+        });
+        settingPanel.add(editButton);
+
+        RoundedButton removeButton = new RoundedButton("Remove", 0, getBackground(), getForeground(), 13);
+        removeButton.setBounds(0, 30, 100, 30);
+        removeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                TaskPanel.this.setVisible(false);
+                currentColumn.removeTask(TaskPanel.this);
+                kanbanBoardPanel.reset();
+            }
+        });
+        settingPanel.add(removeButton);
 
 
         title.setBounds(10, 30, 120, 10);
         title.setFont(new Font("assets/Montserrat-ExtraLight.ttf", Font.BOLD, 13));
         add(title);
 
-        JLabel setting = new JLabel("⋮");
+        RoundedButton setting = new RoundedButton("⋮", 30, this.getBackground(), Color.BLACK, 22);
         setting.setBounds(120, 5, 15, 18);
         setting.setFont(new Font("assets/Montserrat-ExtraLight.ttf", Font.BOLD, 22));
+        setting.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!isSettingOpen) {
+                    Point buttonLocation = setting.getLocationOnScreen();
+                    Point mouseLocation = MouseInfo.getPointerInfo().getLocation();
+                    int mouseX = mouseLocation.x - buttonLocation.x;
+                    int mouseY = mouseLocation.y - buttonLocation.y;
+
+                    settingPanel.setBounds(mouseX + 20, mouseY, 100, 60);
+                    settingPanel.setVisible(true);
+                    isSettingOpen = true;
+                } else {
+                    settingPanel.setVisible(false);
+                    isSettingOpen = false;
+                }
+            }
+        });
+
+
         add(setting);
 
         theText.setBounds(10, 40, 120, 80);
@@ -41,7 +107,7 @@ public class TaskPanel extends JPanel {
         taskType.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(currentTask==3)currentTask=0;
+                if (currentTask == 3) currentTask = 0;
                 else currentTask++;
                 taskType.setBackgroundColor(TaskTypes.values()[currentTask].getColor());
                 taskType.setText(TaskTypes.values()[currentTask].getName());
@@ -49,11 +115,25 @@ public class TaskPanel extends JPanel {
         });
         add(taskType);
 
-
+        setComponentZOrder(settingPanel, 0);
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         setBackground(Color.WHITE); // Set background color to white
         setOpaque(false); // Make the panel background transparent
 
+
+        kanbanBoardPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                Point clickPoint = e.getPoint();
+                SwingUtilities.convertPointToScreen(clickPoint, kanbanBoardPanel);
+                SwingUtilities.convertPointFromScreen(clickPoint, TaskPanel.this);
+                if (!TaskPanel.this.contains(clickPoint)) {
+                    settingPanel.setVisible(false);
+                    isSettingOpen = false;
+                    isEditable = false;
+                }
+            }
+        });
 
         addMouseListener(new MouseAdapter() {
             @Override
@@ -126,6 +206,8 @@ public class TaskPanel extends JPanel {
 
         super.paintComponent(g2);
         g2.dispose();
+
+
     }
 
     public void setTitle(String theTitle) {
