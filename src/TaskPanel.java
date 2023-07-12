@@ -2,19 +2,26 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.RoundRectangle2D;
 
 public class TaskPanel extends JPanel {
-    private final String task;
     private CategoryPanel currentColumn;
     private Point offset;
+    private final JLabel title = new JLabel();
 
-    public TaskPanel(String task ,KanbanBoardPanel kanbanBoardPanel) {
-        this.task = task;
-        currentColumn = kanbanBoardPanel.backLog;
-        setBorder(BorderFactory.createEtchedBorder());
-        add(new JLabel(task));
-
-
+    public TaskPanel(CategoryPanel categoryPanel, KanbanBoardPanel kanbanBoardPanel) {
+        currentColumn = categoryPanel;
+        setLayout(null);
+        title.setBounds(10, 45, 140, 13);
+        title.setFont(new Font("assets/Montserrat-ExtraLight.ttf", Font.BOLD, 13));
+        add(title);
+        JLabel setting = new JLabel("⋮");
+        title.setBounds(130, 15, 140, 13);
+        title.setFont(new Font("assets/Montserrat-ExtraLight.ttf", Font.PLAIN, 13));
+        add(setting);
+        setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        setBackground(Color.WHITE); // Set background color to white
+        setOpaque(false); // Make the panel background transparent
 
         addMouseListener(new MouseAdapter() {
             @Override
@@ -55,7 +62,6 @@ public class TaskPanel extends JPanel {
 
                 kanbanBoardPanel.reset();
             }
-
         });
 
         addMouseMotionListener(new MouseAdapter() {
@@ -67,5 +73,30 @@ public class TaskPanel extends JPanel {
                 getParent().repaint();
             }
         });
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        int width = getWidth();
+        int height = getHeight();
+
+        Shape shape = new RoundRectangle2D.Double(0, 0, width - 1, height - 1, 40, 40);
+
+        g2.setColor(getBackground());
+        g2.fill(shape);
+        Stroke borderStroke = new BasicStroke(0f);
+        g2.setStroke(borderStroke);
+        g2.setColor(getForeground());
+        g2.draw(shape);
+
+        super.paintComponent(g2);
+        g2.dispose();
+    }
+
+    public void setTitle(String theTitle) {
+        title.setText(theTitle);
     }
 }

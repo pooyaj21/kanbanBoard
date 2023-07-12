@@ -9,13 +9,13 @@ public class CircularLabel extends JLabel {
 
     public CircularLabel(String text, int cornerRadius, Color backgroundColor, Color foregroundColor, int fontSize) {
         super(text);
-        this.cornerRadius = cornerRadius;
         this.backgroundColor = backgroundColor;
+        this.cornerRadius = cornerRadius;
+        this.setFont(new Font("Arial", Font.TRUETYPE_FONT, fontSize));
+        setHorizontalAlignment(SwingConstants.CENTER);
         setForeground(foregroundColor);
         setOpaque(false);
-        setFont(new Font("assets/Montserrat-ExtraLight.ttf", Font.PLAIN, fontSize));
-        setHorizontalAlignment(SwingConstants.CENTER);
-        setVerticalAlignment(SwingConstants.CENTER);
+        setForeground(foregroundColor);
         setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
     }
 
@@ -26,22 +26,14 @@ public class CircularLabel extends JLabel {
 
         int width = getWidth();
         int height = getHeight();
-        Shape shape = new Ellipse2D.Double(0, 0, width, height);
+        Shape shape = new RoundRectangle2D.Double(0, 0, width - 1, height - 1, cornerRadius, cornerRadius);
 
         g2.setColor(backgroundColor);
         g2.fill(shape);
-        Stroke borderStroke = new BasicStroke(0f);
-        g2.setStroke(borderStroke);
-        g2.setColor(getForeground());
+        g2.setColor(backgroundColor);
         g2.draw(shape);
 
         super.paintComponent(g2);
         g2.dispose();
-    }
-
-    @Override
-    public Dimension getPreferredSize() {
-        int diameter = Math.max(super.getPreferredSize().width, super.getPreferredSize().height);
-        return new Dimension(diameter, diameter);
     }
 }

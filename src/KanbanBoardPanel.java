@@ -4,23 +4,21 @@ import java.awt.*;
 
 public class KanbanBoardPanel extends JPanel {
     final CategoryPanel backLog = new CategoryPanel();
-    final DesignedColumn bacLogD = new DesignedColumn("Back Log");
+    final DesignedColumn bacLogD = new DesignedColumn("Back Log", backLog, this,Color.BLACK);
     final CategoryPanel toDo = new CategoryPanel();
-    final DesignedColumn toDoD = new DesignedColumn("To Do");
+    final DesignedColumn toDoD = new DesignedColumn("To Do", toDo, this,Color.red);
     final CategoryPanel inProgress = new CategoryPanel();
-    final DesignedColumn inProgressD = new DesignedColumn("In Progress");
+    final DesignedColumn inProgressD = new DesignedColumn("In Progress", inProgress, this,Color.BLUE);
     final CategoryPanel needReview = new CategoryPanel();
-    final DesignedColumn needReviewD = new DesignedColumn("Need Review");
+    final DesignedColumn needReviewD = new DesignedColumn("Need Review", needReview, this,Color.yellow);
     final CategoryPanel done = new CategoryPanel();
-    final DesignedColumn doneD = new DesignedColumn("Done");
+    final DesignedColumn doneD = new DesignedColumn("Done", done, this,Color.GREEN);
+    int panelWidth = 160;
 
     public KanbanBoardPanel() {
         setLayout(null);
-        TaskPanel first = new TaskPanel("aa", this);
-        TaskPanel second = new TaskPanel("bb", this);
         setBackground(new Color(0xf7f7f7));
         int panelHeight = getHeight();
-        int panelWidth = 160;
 
         backLog.setBounds(0, 75, panelWidth, panelHeight);
         toDo.setBounds(panelWidth, 75, panelWidth, panelHeight);
@@ -29,18 +27,12 @@ public class KanbanBoardPanel extends JPanel {
         done.setBounds(panelWidth * 4, 75, panelWidth, panelHeight);
 
 
-        bacLogD.setBounds(0, 0, panelWidth, 800);
-        toDoD.setBounds(panelWidth, 0, panelWidth, 800);
-        inProgressD.setBounds(panelWidth * 2, 0, panelWidth, 800);
-        needReviewD.setBounds(panelWidth * 3, 0, panelWidth, 800);
-        doneD.setBounds(panelWidth * 4, 0, panelWidth, 800);
+        bacLogD.setBounds(0, 0, panelWidth, 80);
+        toDoD.setBounds(panelWidth, 0, panelWidth, 80);
+        inProgressD.setBounds(panelWidth * 2, 0, panelWidth, 80);
+        needReviewD.setBounds(panelWidth * 3, 0, panelWidth, 80);
+        doneD.setBounds(panelWidth * 4, 0, panelWidth, 80);
 
-
-
-        add(first);
-        add(second);
-        addTask(second, backLog);
-        addTask(first, backLog);
 
         add(backLog);
         add(toDo);
@@ -63,6 +55,7 @@ public class KanbanBoardPanel extends JPanel {
             JFrame frame = new JFrame("Kanban Board");
             frame.setSize(800, 800);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setResizable(false);
             frame.setLayout(null);
             KanbanBoardPanel kanbanBoardPanel = new KanbanBoardPanel();
             kanbanBoardPanel.setBounds(0, 0, frame.getWidth(), frame.getHeight());
