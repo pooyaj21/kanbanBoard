@@ -7,8 +7,9 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
 
 public class TaskPanel extends JPanel {
-    private final JLabel title = new JLabel();
-    private final JLabel theText = new JLabel();
+    private final JTextArea title = new JTextArea();
+    private final JTextArea theText = new JTextArea();
+
     private final JPanel settingPanel = new JPanel() {
         @Override
         protected void paintComponent(Graphics g) {
@@ -34,9 +35,8 @@ public class TaskPanel extends JPanel {
         currentColumn = categoryPanel;
         setBackground(Color.white);
         setLayout(null);
-        setTitle("the title");//test
-        setText("the text that is so big you cant handel it so you must handel it but you cant you must handel it  you must do it but you cant but you  should");//test
-
+        setTitle("The Title");
+        setText("The Body of the task");
 
         add(settingPanel);
         settingPanel.setVisible(false);
@@ -50,6 +50,7 @@ public class TaskPanel extends JPanel {
                 settingPanel.setVisible(false);
                 isSettingOpen = false;
                 isEditable = true;
+                toggleEditMode(true); // Switch to edit mode
             }
         });
         settingPanel.add(editButton);
@@ -67,12 +68,14 @@ public class TaskPanel extends JPanel {
         settingPanel.add(removeButton);
 
 
-        title.setBounds(10, 30, 120, 10);
+        title.setBounds(10, 30, 160, 20);
         title.setFont(new Font("assets/Montserrat-ExtraLight.ttf", Font.BOLD, 13));
+        title.setEditable(false);
+        title.setFocusable(false);
         add(title);
 
         RoundedButton setting = new RoundedButton("⋮", 30, this.getBackground(), Color.BLACK, 22);
-        setting.setBounds(120, 5, 15, 18);
+        setting.setBounds(160, 5, 15, 18);
         setting.setFont(new Font("assets/Montserrat-ExtraLight.ttf", Font.BOLD, 22));
         setting.addActionListener(new ActionListener() {
             @Override
@@ -83,22 +86,24 @@ public class TaskPanel extends JPanel {
                     int mouseX = mouseLocation.x - buttonLocation.x;
                     int mouseY = mouseLocation.y - buttonLocation.y;
 
-                    settingPanel.setBounds(mouseX + 20, mouseY, 100, 60);
+                    settingPanel.setBounds(mouseX + 60, mouseY, 100, 60);
                     settingPanel.setVisible(true);
                     isSettingOpen = true;
                 } else {
                     settingPanel.setVisible(false);
                     isSettingOpen = false;
                 }
+                isEditable = false;
             }
         });
 
 
         add(setting);
 
-        theText.setBounds(10, 40, 120, 80);
+        theText.setBounds(10, 50, 160, 70);
         theText.setFont(new Font("assets/Montserrat-ExtraLight.ttf", Font.PLAIN, 10));
-        theText.setHorizontalAlignment(SwingConstants.LEFT);
+        theText.setEditable(false);
+        theText.setFocusable(false);
         add(theText);
 
 
@@ -107,10 +112,12 @@ public class TaskPanel extends JPanel {
         taskType.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (currentTask == 3) currentTask = 0;
-                else currentTask++;
-                taskType.setBackgroundColor(TaskTypes.values()[currentTask].getColor());
-                taskType.setText(TaskTypes.values()[currentTask].getName());
+                if (isEditable) {
+                    if (currentTask == 3) currentTask = 0;
+                    else currentTask++;
+                    taskType.setBackgroundColor(TaskTypes.values()[currentTask].getColor());
+                    taskType.setText(TaskTypes.values()[currentTask].getName());
+                }
             }
         });
         add(taskType);
@@ -131,6 +138,7 @@ public class TaskPanel extends JPanel {
                     settingPanel.setVisible(false);
                     isSettingOpen = false;
                     isEditable = false;
+                    toggleEditMode(false);
                 }
             }
         });
@@ -176,6 +184,7 @@ public class TaskPanel extends JPanel {
             }
         });
 
+
         addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseDragged(MouseEvent e) {
@@ -185,6 +194,22 @@ public class TaskPanel extends JPanel {
                 getParent().repaint();
             }
         });
+
+
+    }
+
+    private void toggleEditMode(boolean editMode) {
+        if (editMode) {
+            title.setEditable(true);
+            theText.setEditable(true);
+            title.setFocusable(true);
+            theText.setFocusable(true);
+        } else {
+            title.setEditable(false);
+            theText.setEditable(false);
+            title.setFocusable(false);
+            theText.setFocusable(false);
+        }
     }
 
     @Override
@@ -215,30 +240,9 @@ public class TaskPanel extends JPanel {
     }
 
     public void setText(String text) {
-        int lineLength = 24;
-        int currentIndex = 0;
-        int textLength = text.length();
-        StringBuilder sb = new StringBuilder(text);
-
-        while (currentIndex < textLength) {
-            int nextIndex = currentIndex + lineLength;
-
-            if (nextIndex < textLength) {
-                int spaceIndex = sb.lastIndexOf(" ", nextIndex);
-                if (spaceIndex != -1) {
-                    sb.insert(spaceIndex + 1, "<br>");
-                    currentIndex = spaceIndex + 1;
-                } else {
-                    sb.insert(nextIndex + 1, "<br>");
-                    currentIndex = nextIndex + 1;
-                }
-            } else {
-                break;
-            }
-        }
-        text = sb.toString();
-        theText.setText("<html>" + "<br>" + text + "</html>");
+        theText.setText(text);
     }
 }
+
 
 

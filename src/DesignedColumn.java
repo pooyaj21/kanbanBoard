@@ -18,13 +18,13 @@ public class DesignedColumn extends JPanel {
         setBackground(null);
         setLayout(null);
         theDot.setBounds(0, 0, 10, 50);
-        header.setBounds(15, 7, 140, 40);
+        header.setBounds(15, 7, 180, 40);
 
 
-        numberTask.setBounds(name.length()*5+50, 15, 35, 30);
+        numberTask.setBounds(name.length()*5+50, 12, 35, 30);
         RoundedButton addTask = new RoundedButton("+ Add New Task", 12, Color.white, new Color(0x4a60b5), 12);
         addTask.setFont(new Font("assets/Montserrat-ExtraLight.ttf", Font.BOLD, 12));
-        addTask.setBounds(5, 47, 150, 32);
+        addTask.setBounds(5, 47, 190, 32);
         addTask.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

@@ -25,7 +25,7 @@ public class CategoryPanel extends JPanel {
         setBackground(null);
 
         for (TaskPanel task : tasks) {
-            task.setBounds(categoryPanelX + 10, lowestY + 5, 140, 130);
+            task.setBounds(categoryPanelX + 10, lowestY + 5, 180, 130);
             lowestY += task.getHeight() + 5;
         }
         repaint();
